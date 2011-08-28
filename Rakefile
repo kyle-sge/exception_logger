@@ -6,9 +6,9 @@ begin
     gem.name = "exception_logger"
     gem.summary = "Exception Logger for Rails 3"
     gem.description = "Logs exceptions inside a database table. Now available as gem for Rails3 (previously a plugin for Rails2)"
-    gem.email = "roland.guem@gmail.com"
+    gem.email = ["roland.guem@gmail.com","cwise@murmurinformatics.com"]
     gem.homepage = "http://github.com/QuBiT/exception_logger"
-    gem.authors = ["Roland Guem"]
+    gem.authors = ["Roland Guem", "Chris Wise"]
     gem.files = Dir["{lib}/**/*", "{app}/**/*", "{config}/**/*", "{public}/**/*"]
     gem.test_files = Dir["{test}/**/*"]
     gem.add_dependency 'rails', '>=3.0.0'
@@ -16,6 +16,7 @@ begin
     gem.add_dependency "meta_where", ">= 0.5.2"
     gem.add_dependency "i18n", ">= 0.4.1"
     gem.add_development_dependency "shoulda", ">= 2.11.3"
+    gem.add_development_dependency "jeweler"
     gem.extra_rdoc_files = ["LICENSE","README.rdoc"]
     gem.post_install_message = %q{
 _()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_()_
