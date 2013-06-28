@@ -1,15 +1,32 @@
 class LoggedException < ActiveRecord::Base
+  db="logdb_#{Rails.env}"
+  self.establish_connection(db)
+
+  attr_accessible :exception_class, :controller_name, :action_name, :message, :backtrace, :environment, :request, :count, :resolved, :last_occurance
+
   class << self
     def create_from_exception(controller, exception, data)
       message = exception.message.inspect
       message << "\n* Extra Data\n\n#{data}" unless data.blank?
-      e = create! \
+      options = {
         :exception_class => exception.class.name,
         :controller_name => controller.controller_path,
         :action_name     => controller.action_name,
         :message         => message,
         :backtrace       => exception.backtrace,
-        :request         => controller.request
+        :request         => controller.request,
+        :last_occurance  => Time.now.utc
+      }
+
+      fields = [:exception_class, :controller_name, :action_name, :message]
+      conditions = fields.inject({}) {|cond, field| cond[field] = options[field]; cond }
+      existing = self.find(:first, :conditions => conditions)
+      
+      if existing
+        existing.update_attributes(:count => (existing.count + 1), :resolved => false, :last_occurance => Time.now.utc)
+      else
+        create!(options)
+      end
     end
     
     def host_name
@@ -22,8 +39,8 @@ class LoggedException < ActiveRecord::Base
   scope :by_controller, lambda {|controller_name| where(:controller_name => controller_name)}
   scope :by_action, lambda {|action_name| where(:action_name => action_name)}
   scope :message_like, lambda {|query|  where(:message.matches => "%#{query}%")}
-  scope :days_old, lambda {|day_number| where(:created_at.gteq => day_number.to_f.days.ago.utc)}
-  scope :sorted, order(:created_at.desc)
+  scope :days_old, lambda {|day_number| where("created_at >= ?", day_number.to_f.days.ago.utc)}
+  scope :sorted, order("created_at desc")
   
   def name
     "#{self.exception_class} in #{self.controller_action}"

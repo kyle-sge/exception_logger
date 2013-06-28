@@ -8,6 +8,9 @@ class AddLoggedExceptionTable < ActiveRecord::Migration
       t.text :backtrace
       t.text :environment
       t.text :request
+      t.integer :count
+      t.boolean :resolved
+      t.datetime :last_occurance
       t.datetime :created_at
     end
   end

@@ -1,8 +1,8 @@
 require "exception_logger"
 require "rails"
-require "kaminari"
+require "will_paginate"
 require "i18n"
-require "meta_where"
+require "squeel"
 
 module ExceptionLogger
   class Engine < Rails::Engine
